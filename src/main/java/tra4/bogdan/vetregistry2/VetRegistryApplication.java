@@ -6,8 +6,11 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.Connection;
 
 public class VetRegistryApplication extends Application {
+    private static Connection conn;
+
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(VetRegistryApplication.class.getResource("app-view.fxml"));
@@ -18,6 +21,7 @@ public class VetRegistryApplication extends Application {
     }
 
     public static void main(String[] args) {
+        conn =  DatabaseConnection.connect();
         launch();
     }
 }

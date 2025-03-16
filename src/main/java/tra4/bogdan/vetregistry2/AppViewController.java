@@ -1,0 +1,38 @@
+package tra4.bogdan.vetregistry2;
+
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+
+import java.io.IOException;
+
+public class AppViewController {
+    @FXML
+    private Label welcomeText;
+
+    @FXML
+    protected void onHelloButtonClick() {
+        welcomeText.setText("Welcome to JavaFX Application!");
+    }
+
+    @FXML
+    private void showClinicForm() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("add-clinic-form.fxml"));
+            //loader.setController(new AddClinicFormController(null));
+
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL); // Makes it a modal window
+            stage.setTitle("Add New Clinic");
+            stage.setScene(new Scene(root));
+            stage.showAndWait(); // Blocks interaction with the main window until closed
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}

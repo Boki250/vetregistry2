@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="10" alignment="CENTER" xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="tra4.bogdan.vetregistry2.AddClinicFormController">
+    <Label text="Add New Clinic"/>
+    <TextField fx:id="titleField" promptText="Clinic Title"/>
+    <TextField fx:id="addressField" promptText="Address"/>
+    <TextField fx:id="townIdField" promptText="Town ID"/>
+    <TextField fx:id="phoneField" promptText="Phone Number"/>
+    <Button text="Add Clinic" onAction="#handleAddClinic"/>
+</VBox>
