@@ -23,14 +23,14 @@ public class AppViewController {
     private void showClinicForm() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("add-clinic-form.fxml"));
-            //loader.setController(new AddClinicFormController(null));
+            loader.setController(new AddClinicFormController(VetRegistryApplication.getConnection()));
 
             Parent root = loader.load();
             Stage stage = new Stage();
-            stage.initModality(Modality.APPLICATION_MODAL); // Makes it a modal window
+            stage.initModality(Modality.APPLICATION_MODAL);
             stage.setTitle("Add New Clinic");
             stage.setScene(new Scene(root));
-            stage.showAndWait(); // Blocks interaction with the main window until closed
+            stage.showAndWait();
         } catch (IOException e) {
             e.printStackTrace();
         }

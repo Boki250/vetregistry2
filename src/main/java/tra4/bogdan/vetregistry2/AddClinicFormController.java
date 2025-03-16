@@ -14,8 +14,8 @@ public class AddClinicFormController {
     private Connection conn;
 
     // Constructor receives the database connection
-    public AddClinicFormController(/*Connection conn*/) {
-        //this.conn = conn;
+    public AddClinicFormController(Connection conn) {
+        this.conn = conn;
     }
 
     @FXML

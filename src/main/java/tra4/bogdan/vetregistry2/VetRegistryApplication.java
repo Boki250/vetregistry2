@@ -24,4 +24,6 @@ public class VetRegistryApplication extends Application {
         conn =  DatabaseConnection.connect();
         launch();
     }
+
+    public static Connection getConnection() { return conn; }
 }
