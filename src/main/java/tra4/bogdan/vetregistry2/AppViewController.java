@@ -23,9 +23,12 @@ public class AppViewController {
     private void showClinicForm() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("add-clinic-form.fxml"));
-            loader.setController(new AddClinicFormController(VetRegistryApplication.getConnection()));
+            AddClinicFormController controller = new AddClinicFormController(VetRegistryApplication.getConnection());
+            loader.setController(controller);
 
             Parent root = loader.load();
+            controller.prefillTownComboBox(); // Prefill the combo box with data
+
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setTitle("Add New Clinic");

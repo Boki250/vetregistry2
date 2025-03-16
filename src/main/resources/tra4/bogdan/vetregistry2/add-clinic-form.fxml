@@ -7,7 +7,7 @@
     <Label text="Add New Clinic"/>
     <TextField fx:id="titleField" promptText="Clinic Title"/>
     <TextField fx:id="addressField" promptText="Address"/>
-    <TextField fx:id="townIdField" promptText="Town ID"/>
+    <ComboBox fx:id="townIdField" promptText="Town ID"/>
     <TextField fx:id="phoneField" promptText="Phone Number"/>
     <Button text="Add Clinic" onAction="#handleAddClinic"/>
 </VBox>
