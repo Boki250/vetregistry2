@@ -4,6 +4,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class AddClinicFormController {
     @FXML private TextField titleField;
@@ -22,22 +24,40 @@ public class AddClinicFormController {
     private void handleAddClinic() {
         String title = titleField.getText();
         String address = addressField.getText();
-        int townId = Integer.parseInt(townIdField.getText());
         String phone = phoneField.getText();
 
-/*        ClinicDAO clinicDAO = new ClinicDAO(conn);
-        clinicDAO.addClinic(title, address, townId, phone);
+        if (title.isEmpty() || address.isEmpty() || townIdField.getText().isEmpty() || phone.isEmpty()) {
+            showAlert(Alert.AlertType.ERROR, "Vpisani podatek ni pravilen", "Vsa polja morajo biti izponjena.");
+            return;
+        }
 
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Success");
-        alert.setHeaderText(null);
-        alert.setContentText("Clinic added successfully!");
-        alert.showAndWait();*/
+        String sql = "INSERT INTO clinic (title, address, town_id, phone_number) VALUES (?, ?, ?, ?)";
 
-        // Clear fields
-        titleField.clear();
-        addressField.clear();
-        townIdField.clear();
-        phoneField.clear();
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, title);
+            pstmt.setString(2, address);
+            pstmt.setInt(3, 0);
+            pstmt.setString(4, phone);
+
+            pstmt.executeUpdate();
+            showAlert(Alert.AlertType.INFORMATION, "Success", "Clinic added successfully!");
+
+            // Clear form fields
+            titleField.clear();
+            addressField.clear();
+            townIdField.clear();
+            phoneField.clear();
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Database Error", "Failed to insert clinic.");
+            e.printStackTrace();
+        }
+    }
+
+    private void showAlert(Alert.AlertType alertType, String invalidInput, String s) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle("Invalid Input");
+        alert.setHeaderText(invalidInput);
+        alert.setContentText(s);
+        alert.showAndWait();
     }
 }
