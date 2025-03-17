@@ -5,12 +5,32 @@
 <?import javafx.scene.layout.VBox?>
 
 <?import javafx.scene.control.Button?>
-<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
+
+<VBox alignment="TOP_CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
       fx:controller="tra4.bogdan.vetregistry2.AppViewController">
     <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
     </padding>
+    <HBox alignment="TOP_CENTER" spacing="5.0">
+        <Button text="Button 1"/>
+        <Button text="Dodaj kliniko" onAction="#showClinicForm"/>
+    </HBox>
 
-    <Label fx:id="welcomeText"/>
-    <Button text="Dodaj kliniko" onAction="#showClinicForm"/>
+    <TableView fx:id="clinicTable" prefWidth="600">
+        <columns>
+            <TableColumn text="Id" fx:id="clinicIdColumn" />
+            <!-- Stolpec za ime klinike -->
+            <TableColumn text="Ime klinike" fx:id="clinicTitleColumn" />
+            <!-- Stolpec za naslov klinike -->
+            <TableColumn text="Naslov" fx:id="clinicAddressColumn" />
+            <TableColumn text="Mesto" fx:id="clinicTownColumn" />
+            <!-- Stolpec za kontakt -->
+            <TableColumn text="Telefonska številka" fx:id="clinicPhoneNumberColumn" />
+        </columns>
+    </TableView>
+
+
 </VBox>
