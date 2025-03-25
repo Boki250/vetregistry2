@@ -39,18 +39,18 @@ public class TownsController {
         townZipColumn.setCellValueFactory(new PropertyValueFactory<>("zip"));
 
         // Napolni tabelo s podatki iz baze
-        loadClinicData();
+        loadTownData();
     }
 
-    private void loadClinicData() {
-        ObservableList<Town> clinics = this.filterClinics("");
-        townsTable.setItems(clinics);
+    private void loadTownData() {
+        ObservableList<Town> towns = this.filterTowns("");
+        townsTable.setItems(towns);
     }
 
 
 
     @FXML
-    private void showClinicForm() {
+    private void showTownForm() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("add-clinic-form.fxml"));
             AddClinicFormController controller = new AddClinicFormController();
@@ -71,7 +71,7 @@ public class TownsController {
 
     public void applyFilter(){
         String ime  = inputFilterIme.getText();
-        ObservableList<Town> towns = this.filterClinics(ime);
+        ObservableList<Town> towns = this.filterTowns(ime);
         townsTable.setItems(towns);
     }
 
@@ -80,13 +80,13 @@ public class TownsController {
         applyFilter();
     }
 
-    public ObservableList<Town> filterClinics(String ime) {
+    public ObservableList<Town> filterTowns(String ime) {
         ObservableList<Town> towns = FXCollections.observableArrayList();
-        String query = "SELECT t.* FROM town t";
+        String query = "SELECT t.* FROM town t WHERE t.name ILIKE ?";
 
         try (Connection connection = DatabaseConnection.connect();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            //preparedStatement.setString(1, "%" + ime + "%");
+            preparedStatement.setString(1, "%" + ime + "%");
             ResultSet resultSet = preparedStatement.executeQuery();
 
             // Preberite podatke iz rezultata

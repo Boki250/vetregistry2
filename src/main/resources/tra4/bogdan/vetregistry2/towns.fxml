@@ -14,7 +14,7 @@
             <TextField fx:id="inputFilterIme" promptText="Vnesite naziv" maxWidth="300.0" />
             <Button text="Išči" onAction="#applyFilter"/>
             <Button text="Počisti" onAction="#clearFilter"/>
-            <Button text="Dodaj mesto" onAction="#showClinicForm"/>
+            <Button text="Dodaj mesto" onAction="#showTownForm"/>
         </HBox>
     </top>
 
