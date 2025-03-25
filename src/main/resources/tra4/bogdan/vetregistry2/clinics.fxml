@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tra4.bogdan.vetregistry2.ClinicsController">
+    <top>
+        <HBox alignment="TOP_CENTER" spacing="5.0">
+            <TextField fx:id="inputFilterIme" promptText="Vnesite naziv" maxWidth="300.0" />
+            <Button text="Išči" onAction="#applyFilter"/>
+            <Button text="Počisti" onAction="#clearFilter"/>
+            <Button text="Dodaj kliniko" onAction="#showClinicForm"/>
+        </HBox>
+    </top>
+
+    <center>
+        <TableView fx:id="clinicTable" prefWidth="600">
+            <columns>
+                <TableColumn text="Id" fx:id="clinicIdColumn" />
+                <!-- Stolpec za ime klinike -->
+                <TableColumn text="Ime klinike" fx:id="clinicTitleColumn" />
+                <!-- Stolpec za naslov klinike -->
+                <TableColumn text="Naslov" fx:id="clinicAddressColumn" />
+                <TableColumn text="Mesto" fx:id="clinicTownColumn" />
+                <!-- Stolpec za kontakt -->
+                <TableColumn text="Telefonska številka" fx:id="clinicPhoneNumberColumn" />
+            </columns>
+        </TableView>
+    </center>
+</BorderPane>

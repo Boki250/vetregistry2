@@ -15,11 +15,14 @@
 <?import javafx.scene.control.SeparatorMenuItem?>
 
 
-<VBox alignment="TOP_CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="tra4.bogdan.vetregistry2.AppViewController">
+<?import javafx.scene.layout.BorderPane?>
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tra4.bogdan.vetregistry2.AppViewController"
+            fx:id="rootPane">
     <padding>
         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
     </padding>
+    <top>
     <MenuBar fx:id="menuBar">
         <menus>
             <Menu text="Datoteka">
@@ -29,7 +32,7 @@
             </Menu>
             <Menu text="Pogled">
                 <items>
-                    <MenuItem text="Klinike"/>
+                    <MenuItem text="Klinike" onAction="#showClinics"/>
                     <MenuItem text="Storitve"/>
                     <MenuItem text="Mesta"/>
                     <MenuItem text="Vrste"/>
@@ -37,25 +40,8 @@
             </Menu>
         </menus>
     </MenuBar>
-    <HBox alignment="TOP_CENTER" spacing="5.0">
-        <TextField fx:id="inputFilterIme" promptText="Vnesite naziv" maxWidth="300.0" />
-        <Button text="Išči" onAction="#applyFilter"/>
-        <Button text="Počisti" onAction="#clearFilter"/>
-        <Button text="Dodaj kliniko" onAction="#showClinicForm"/>
-    </HBox>
+    </top>
+    <center>
 
-    <TableView fx:id="clinicTable" prefWidth="600">
-        <columns>
-            <TableColumn text="Id" fx:id="clinicIdColumn" />
-            <!-- Stolpec za ime klinike -->
-            <TableColumn text="Ime klinike" fx:id="clinicTitleColumn" />
-            <!-- Stolpec za naslov klinike -->
-            <TableColumn text="Naslov" fx:id="clinicAddressColumn" />
-            <TableColumn text="Mesto" fx:id="clinicTownColumn" />
-            <!-- Stolpec za kontakt -->
-            <TableColumn text="Telefonska številka" fx:id="clinicPhoneNumberColumn" />
-        </columns>
-    </TableView>
-
-
-</VBox>
+    </center>
+</BorderPane>
