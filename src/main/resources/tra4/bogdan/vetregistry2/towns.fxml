@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tra4.bogdan.vetregistry2.TownsController">
+    <top>
+        <HBox alignment="TOP_CENTER" spacing="5.0">
+            <TextField fx:id="inputFilterIme" promptText="Vnesite naziv" maxWidth="300.0" />
+            <Button text="Išči" onAction="#applyFilter"/>
+            <Button text="Počisti" onAction="#clearFilter"/>
+            <Button text="Dodaj mesto" onAction="#showClinicForm"/>
+        </HBox>
+    </top>
+
+    <center>
+        <TableView fx:id="townsTable" prefWidth="600">
+            <columns>
+                <TableColumn text="Mesto" fx:id="townNameColumn" />
+                <TableColumn text="Poštna številka" fx:id="townZipColumn" />
+            </columns>
+        </TableView>
+    </center>
+</BorderPane>

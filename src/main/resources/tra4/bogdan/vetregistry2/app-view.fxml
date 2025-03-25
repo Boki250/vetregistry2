@@ -34,7 +34,7 @@
                 <items>
                     <MenuItem text="Klinike" onAction="#showClinics"/>
                     <MenuItem text="Storitve"/>
-                    <MenuItem text="Mesta"/>
+                    <MenuItem text="Mesta" onAction="#showTowns"/>
                     <MenuItem text="Vrste"/>
                 </items>
             </Menu>
