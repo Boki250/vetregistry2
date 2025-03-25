@@ -19,11 +19,10 @@ public class AddClinicFormController {
     private Connection conn;
 
     // Constructor receives the database connection
-    public AddClinicFormController(Connection conn) {
-        this.conn = conn;
-    }
+    public AddClinicFormController() {}
 
     public void prefillTownComboBox() {
+        conn = DatabaseConnection.connect();
         String sql = "SELECT id, name FROM town";
         try (PreparedStatement pstmt = conn.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {

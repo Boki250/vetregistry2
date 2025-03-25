@@ -69,7 +69,7 @@ public class AppViewController {
     private void showClinicForm() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("add-clinic-form.fxml"));
-            AddClinicFormController controller = new AddClinicFormController(VetRegistryApplication.getConnection());
+            AddClinicFormController controller = new AddClinicFormController();
             loader.setController(controller);
 
             Parent root = loader.load();
