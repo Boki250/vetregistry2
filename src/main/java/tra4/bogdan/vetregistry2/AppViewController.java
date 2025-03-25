@@ -1,19 +1,20 @@
 package tra4.bogdan.vetregistry2;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView.TableViewSelectionModel;
+import javafx.scene.control.TextField;
 
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,7 +23,7 @@ import java.sql.SQLException;
 
 public class AppViewController {
     @FXML
-    private Label welcomeText;
+    private TextField inputFilterIme;
 
     @FXML
     private TableColumn<Clinic, Integer> clinicIdColumn;
@@ -54,16 +55,11 @@ public class AppViewController {
     }
 
     private void loadClinicData() {
-        ObservableList<Clinic> clinics = this.getAllClinics();
+        ObservableList<Clinic> clinics = this.filterClinics("");
         clinicTable.setItems(clinics);
     }
 
 
-
-    @FXML
-    protected void onHelloButtonClick() {
-        welcomeText.setText("Welcome to JavaFX Application!");
-    }
 
     @FXML
     private void showClinicForm() {
@@ -85,13 +81,25 @@ public class AppViewController {
         }
     }
 
-    public ObservableList<Clinic> getAllClinics() {
-        ObservableList<Clinic> clinics = FXCollections.observableArrayList();
-        String query = "SELECT c.id, c.title, c.address, c.town_id, c.phone_number, t.name AS town_name FROM clinic c INNER JOIN town t ON t.id = c.town_id";
+    public void applyFilter(){
+        String ime  = inputFilterIme.getText();
+        ObservableList<Clinic> clinics = this.filterClinics(ime);
+        clinicTable.setItems(clinics);
+    }
 
-        try (Connection connection = VetRegistryApplication.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query);
-             ResultSet resultSet = preparedStatement.executeQuery()) {
+    public void clearFilter(){
+        inputFilterIme.clear();
+        applyFilter();
+    }
+
+    public ObservableList<Clinic> filterClinics(String ime) {
+        ObservableList<Clinic> clinics = FXCollections.observableArrayList();
+        String query = "SELECT c.id, c.title, c.address, c.town_id, c.phone_number, t.name AS town_name FROM clinic c INNER JOIN town t ON t.id = c.town_id WHERE c.title ILIKE ?";
+
+        try (Connection connection = DatabaseConnection.connect();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, "%" + ime + "%");
+            ResultSet resultSet = preparedStatement.executeQuery();
 
             // Preberite podatke iz rezultata
             while (resultSet.next()) {
@@ -105,10 +113,13 @@ public class AppViewController {
                 // Dodajte zapis v seznam
                 clinics.add(new Clinic(id, title, address, new TownItem(townId, townName), phoneNumber));
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
         }
         return clinics;
     }
 
+    public void handleExit(javafx.event.ActionEvent actionEvent) {
+        Platform.exit();
+    }
 }
