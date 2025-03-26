@@ -37,4 +37,14 @@ public class AppViewController {
         Parent view = FXMLLoader.load(getClass().getResource("towns.fxml"));
         rootPane.setCenter(view);
     }
+
+    @FXML
+    private void showSpecies() throws IOException {
+        Parent view = FXMLLoader.load(getClass().getResource("species.fxml"));
+        rootPane.setCenter(view);
+    }
+    @FXML
+    private void showServices() throws IOException {
+        Parent view = FXMLLoader.load(getClass().getResource("services.fxml"));
+    }
 }

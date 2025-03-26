@@ -33,9 +33,9 @@
             <Menu text="Pogled">
                 <items>
                     <MenuItem text="Klinike" onAction="#showClinics"/>
-                    <MenuItem text="Storitve"/>
+                    <MenuItem text="Storitve" onAction="#showServices"/>
                     <MenuItem text="Mesta" onAction="#showTowns"/>
-                    <MenuItem text="Vrste"/>
+                    <MenuItem text="Vrste" onAction="#showSpecies"/>
                 </items>
             </Menu>
         </menus>
