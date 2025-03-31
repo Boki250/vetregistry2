@@ -23,7 +23,7 @@
             <columns>
                 <TableColumn text="Mesto" fx:id="townNameColumn" />
                 <TableColumn text="Poštna številka" fx:id="townZipColumn" />
-                <TableColumn text="Akcija" fx:id="townActionColumn" />
+                <TableColumn text="Akcija" fx:id="townActionColumn" prefWidth="150"/>
             </columns>
         </TableView>
     </center>

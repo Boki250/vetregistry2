@@ -9,6 +9,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -39,10 +40,35 @@ public class ServicesController {
         servicesNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         servicesCostColumn.setCellValueFactory(new PropertyValueFactory<>("cost"));
         servicesActionColumn.setCellFactory(param -> new TableCell<>() {
-            private final Button button = new Button("Izbriši");
+            private final Button deleteButton = new Button("Izbriši");
+            private final Button editButton = new Button("Uredi");
+            private final HBox buttonContainer = new HBox(5, editButton, deleteButton);
 
             {
-                button.setOnAction(event -> {
+                editButton.setOnAction(event -> {
+                    Service service = getTableView().getItems().get(getIndex());
+                    System.out.println("Uredi: " + service.getId());
+                    try {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("edit-service-form.fxml"));
+                        EditServiceFormController controller = new EditServiceFormController(service);
+                        loader.setController(controller);
+
+                        Parent root = loader.load();
+
+                        Stage stage = new Stage();
+                        stage.initModality(Modality.APPLICATION_MODAL);
+                        stage.setTitle("Update Services");
+                        stage.setScene(new Scene(root));
+                        stage.showAndWait();
+
+                        loadServiceData();
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+
+                deleteButton.setOnAction(event -> {
                     Service service = getTableView().getItems().get(getIndex());
                     System.out.println("Brisanje: " + service.getId());
                     String query = "DELETE FROM services WHERE id = ?";
@@ -63,7 +89,7 @@ public class ServicesController {
                 if (empty) {
                     setGraphic(null);
                 } else {
-                    setGraphic(button);
+                    setGraphic(buttonContainer);
                 }
             }
 

@@ -9,6 +9,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -50,10 +51,35 @@ public class ClinicsController {
         clinicTownColumn.setCellValueFactory(new PropertyValueFactory<>("town"));
         clinicPhoneNumberColumn.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
         clinicActionColumn.setCellFactory(param -> new TableCell<>() {
-            private final Button button = new Button("Izbriši");
+            private final Button deleteButton = new Button("Izbriši");
+            private final Button editButton = new Button("Uredi");
+            private final HBox buttonContainer = new HBox(5, editButton, deleteButton);
 
             {
-                button.setOnAction(event -> {
+                editButton.setOnAction(event -> {
+                    Clinic clinic = getTableView().getItems().get(getIndex());
+                    System.out.println("Uredi: " + clinic.getId());
+                    try {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("edit-clinic-form.fxml"));
+                        EditClinicFormController controller = new EditClinicFormController(clinic);
+                        loader.setController(controller);
+
+                        Parent root = loader.load();
+
+                        Stage stage = new Stage();
+                        stage.initModality(Modality.APPLICATION_MODAL);
+                        stage.setTitle("Update Clinic");
+                        stage.setScene(new Scene(root));
+                        stage.showAndWait();
+
+                        loadClinicData();
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+
+                deleteButton.setOnAction(event -> {
                     Clinic clinic = getTableView().getItems().get(getIndex());
                     System.out.println("Brisanje: " + clinic.getId());
                     String query = "DELETE FROM clinic WHERE id = ?";
@@ -74,7 +100,7 @@ public class ClinicsController {
                 if (empty) {
                     setGraphic(null);
                 } else {
-                    setGraphic(button);
+                    setGraphic(buttonContainer);
                 }
             }
         });

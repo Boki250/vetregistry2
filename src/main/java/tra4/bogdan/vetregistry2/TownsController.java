@@ -9,6 +9,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -39,10 +40,35 @@ public class TownsController {
         townNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         townZipColumn.setCellValueFactory(new PropertyValueFactory<>("zip"));
         townActionColumn.setCellFactory(param -> new TableCell<>() {
-            private final Button button = new Button("Izbriši");
+            private final Button deletebutton = new Button("Izbriši");
+            private final Button editButton = new Button("Uredi");
+            private final HBox buttonContainer = new HBox(5, editButton, deletebutton);
 
             {
-                button.setOnAction(event -> {
+                editButton.setOnAction(event -> {
+                    Town town = getTableView().getItems().get(getIndex());
+                    System.out.println("Uredi: " + town.getId());
+                    try {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("edit-town-form.fxml"));
+                        EditTownFormController controller = new EditTownFormController(town);
+                        loader.setController(controller);
+
+                        Parent root = loader.load();
+
+                        Stage stage = new Stage();
+                        stage.initModality(Modality.APPLICATION_MODAL);
+                        stage.setTitle("Update Towns");
+                        stage.setScene(new Scene(root));
+                        stage.showAndWait();
+
+                        loadTownData();
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+
+                deletebutton.setOnAction(event -> {
                     Town town = getTableView().getItems().get(getIndex());
                     System.out.println("Brisanje: " + town.getId());
                     String query = "DELETE FROM town WHERE id = ?";
@@ -63,7 +89,7 @@ public class TownsController {
                 if (empty) {
                     setGraphic(null);
                 } else {
-                    setGraphic(button);
+                    setGraphic(buttonContainer);
                 }
             }
 
