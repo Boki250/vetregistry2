@@ -22,7 +22,7 @@
         <TableView fx:id="speciesTable" prefWidth="600">
             <columns>
                 <TableColumn text="Vrsta" fx:id="speciesNameColumn" />
-                <TableColumn text="Akcija" fx:id="speciesActionColumn" />
+                <TableColumn text="Akcija" fx:id="speciesActionColumn" prefWidth="150"/>
             </columns>
         </TableView>
     </center>

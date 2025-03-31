@@ -9,6 +9,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -35,10 +36,35 @@ public class SpeciesController {
         // Povezava stolpcev z lastnostmi modela `Clinic`
         speciesNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         speciesActionColumn.setCellFactory(param -> new TableCell<>() {
-            private final Button button = new Button("Izbriši");
+            private final Button editButton = new Button("Uredi");
+            private final Button deleteButton = new Button("Izbriši");
+            private final HBox buttonContainer = new HBox(5, editButton, deleteButton);
 
             {
-                button.setOnAction(event -> {
+                editButton.setOnAction(event -> {
+                    Species species = getTableView().getItems().get(getIndex());
+                    System.out.println("Uredi: " + species.getId());
+                    try {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("edit-species-form.fxml"));
+                        EditSpeciesFormController controller = new EditSpeciesFormController(species);
+                        loader.setController(controller);
+
+                        Parent root = loader.load();
+
+                        Stage stage = new Stage();
+                        stage.initModality(Modality.APPLICATION_MODAL);
+                        stage.setTitle("Update Species");
+                        stage.setScene(new Scene(root));
+                        stage.showAndWait();
+
+                        loadSpeciesData();
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+
+                deleteButton.setOnAction(event -> {
                     Species species = getTableView().getItems().get(getIndex());
                     System.out.println("Brisanje: " + species.getId());
                     String query = "DELETE FROM species WHERE id = ?";
@@ -59,7 +85,7 @@ public class SpeciesController {
                 if (empty) {
                     setGraphic(null);
                 } else {
-                    setGraphic(button);
+                    setGraphic(buttonContainer);
                 }
             }
 
