@@ -7,9 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -33,10 +31,43 @@ public class TownsController {
     @FXML
     private TableView<Town> townsTable;
 
+    @FXML
+    private TableColumn<Town, Void> townActionColumn;
+
     public void initialize() {
         // Povezava stolpcev z lastnostmi modela `Clinic`
         townNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         townZipColumn.setCellValueFactory(new PropertyValueFactory<>("zip"));
+        townActionColumn.setCellFactory(param -> new TableCell<>() {
+            private final Button button = new Button("Izbriši");
+
+            {
+                button.setOnAction(event -> {
+                    Town town = getTableView().getItems().get(getIndex());
+                    System.out.println("Brisanje: " + town.getId());
+                    String query = "DELETE FROM town WHERE id = ?";
+                    try (Connection connection = DatabaseConnection.connect();
+                         PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+                        preparedStatement.setInt(1, town.getId());
+                        preparedStatement.executeUpdate();
+                    } catch (SQLException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                    loadTownData();
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(button);
+                }
+            }
+
+        });
 
         // Napolni tabelo s podatki iz baze
         loadTownData();

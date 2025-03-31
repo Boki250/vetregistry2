@@ -7,9 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -33,10 +31,43 @@ public class ServicesController {
     @FXML
     private TableView<Service> servicesTable;
 
+    @FXML
+    private TableColumn<Service, Void> servicesActionColumn;
+
     public void initialize() {
         // Povezava stolpcev z lastnostmi modela `Clinic`
         servicesNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         servicesCostColumn.setCellValueFactory(new PropertyValueFactory<>("cost"));
+        servicesActionColumn.setCellFactory(param -> new TableCell<>() {
+            private final Button button = new Button("Izbriši");
+
+            {
+                button.setOnAction(event -> {
+                    Service service = getTableView().getItems().get(getIndex());
+                    System.out.println("Brisanje: " + service.getId());
+                    String query = "DELETE FROM services WHERE id = ?";
+                    try (Connection connection = DatabaseConnection.connect();
+                         PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+                        preparedStatement.setInt(1, service.getId());
+                        preparedStatement.executeUpdate();
+                    } catch (SQLException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                    loadServiceData();
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(button);
+                }
+            }
+
+        });
 
         // Napolni tabelo s podatki iz baze
         loadServiceData();

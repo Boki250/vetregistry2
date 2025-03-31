@@ -23,6 +23,7 @@
             <columns>
                 <TableColumn text="Storitev" fx:id="servicesNameColumn" />
                 <TableColumn text="Cena" fx:id="servicesCostColumn" />
+                <TableColumn text="Akcija" fx:id="servicesActionColumn" />
             </columns>
         </TableView>
     </center>
