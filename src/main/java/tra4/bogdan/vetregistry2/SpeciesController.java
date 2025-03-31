@@ -87,7 +87,7 @@ public class SpeciesController {
             // Preberite podatke iz rezultata
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
-                String name = resultSet.getString("name");
+                String name = resultSet.getString("species_name");
 
 
                 // Dodajte zapis v seznam
