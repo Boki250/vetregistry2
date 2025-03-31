@@ -29,6 +29,7 @@
                 <TableColumn text="Mesto" fx:id="clinicTownColumn" />
                 <!-- Stolpec za kontakt -->
                 <TableColumn text="Telefonska številka" fx:id="clinicPhoneNumberColumn" />
+                <TableColumn text="Akcija" fx:id="clinicActionColumn" />
             </columns>
         </TableView>
     </center>
