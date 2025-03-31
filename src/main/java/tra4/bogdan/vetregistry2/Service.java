@@ -3,12 +3,12 @@ package tra4.bogdan.vetregistry2;
 public class Service {
     private String serviceName;
     private int serviceId;
-    private int servicePrice;
+    private int serviceCost;
 
-    public Service(int serviceId, String serviceName, int servicePrice) {
+    public Service(int serviceId, String serviceName, int serviceCost) {
         this.serviceId = serviceId;
         this.serviceName = serviceName;
-        this.servicePrice = servicePrice;
+        this.serviceCost = serviceCost;
     }
 
     public String getName() {
@@ -27,9 +27,9 @@ public class Service {
         this.serviceId = serviceId;
     }
 
-    public int getZip() { return servicePrice;}
+    public int getCost() { return serviceCost;}
 
-    public void setZip(int servicePrice) { this.servicePrice = servicePrice;}
+    public void setCost(int serviceCost) { this.serviceCost = serviceCost;}
 
     @Override
     public String toString() {

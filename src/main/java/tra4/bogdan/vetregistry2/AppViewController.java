@@ -46,5 +46,6 @@ public class AppViewController {
     @FXML
     private void showServices() throws IOException {
         Parent view = FXMLLoader.load(getClass().getResource("services.fxml"));
+        rootPane.setCenter(view);
     }
 }

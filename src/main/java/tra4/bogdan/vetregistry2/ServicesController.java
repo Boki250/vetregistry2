@@ -28,7 +28,7 @@ public class ServicesController {
     private TableColumn<Service, String> servicesNameColumn;
 
     @FXML
-    private TableColumn<Service, Integer> servicesPriceColumn;
+    private TableColumn<Service, Integer> servicesCostColumn;
 
     @FXML
     private TableView<Service> servicesTable;
@@ -36,7 +36,7 @@ public class ServicesController {
     public void initialize() {
         // Povezava stolpcev z lastnostmi modela `Clinic`
         servicesNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        servicesPriceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
+        servicesCostColumn.setCellValueFactory(new PropertyValueFactory<>("cost"));
 
         // Napolni tabelo s podatki iz baze
         loadServiceData();
@@ -52,16 +52,15 @@ public class ServicesController {
     @FXML
     private void showServiceForm() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("add-clinic-form.fxml"));
-            AddClinicFormController controller = new AddClinicFormController();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("add-service-form.fxml"));
+            AddServiceFormController controller = new AddServiceFormController();
             loader.setController(controller);
 
             Parent root = loader.load();
-            controller.prefillTownComboBox(); // Prefill the combo box with data
 
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setTitle("Add New Clinic");
+            stage.setTitle("Add New Service");
             stage.setScene(new Scene(root));
             stage.showAndWait();
         } catch (IOException e) {
@@ -82,7 +81,7 @@ public class ServicesController {
 
     public ObservableList<Service> filterServices(String ime) {
         ObservableList<Service> services = FXCollections.observableArrayList();
-        String query = "SELECT s.+ FROM services s WHERE s.service ILIKE ?";
+        String query = "SELECT s.* FROM services s WHERE s.service ILIKE ?";
 
         try (Connection connection = DatabaseConnection.connect();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -92,12 +91,12 @@ public class ServicesController {
             // Preberite podatke iz rezultata
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
-                String name = resultSet.getString("name");
-                int price = resultSet.getInt("price");
+                String service = resultSet.getString("service");
+                int cost = resultSet.getInt("cost");
 
 
                 // Dodajte zapis v seznam
-                services.add(new Service(id, name, price));
+                services.add(new Service(id, service, cost));
             }
         } catch (SQLException ex) {
             throw new RuntimeException(ex);

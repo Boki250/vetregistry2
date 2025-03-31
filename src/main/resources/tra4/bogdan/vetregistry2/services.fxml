@@ -21,8 +21,8 @@
     <center>
         <TableView fx:id="servicesTable" prefWidth="600">
             <columns>
-                <TableColumn text="Storitev" fx:id="serviceNameColumn" />
-                <TableColumn text="Cena" fx:id="servicePriceColumn" />
+                <TableColumn text="Storitev" fx:id="servicesNameColumn" />
+                <TableColumn text="Cena" fx:id="servicesCostColumn" />
             </columns>
         </TableView>
     </center>
