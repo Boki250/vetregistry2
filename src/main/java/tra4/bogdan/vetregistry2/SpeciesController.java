@@ -59,6 +59,9 @@ public class SpeciesController {
             stage.setTitle("Add New Species");
             stage.setScene(new Scene(root));
             stage.showAndWait();
+
+            loadSpeciesData();
+
         } catch (IOException e) {
             e.printStackTrace();
         }

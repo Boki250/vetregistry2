@@ -63,6 +63,9 @@ public class TownsController {
             stage.setTitle("Add New Town");
             stage.setScene(new Scene(root));
             stage.showAndWait();
+
+            loadTownData();
+
         } catch (IOException e) {
             e.printStackTrace();
         }

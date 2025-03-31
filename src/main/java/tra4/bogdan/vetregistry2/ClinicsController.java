@@ -75,6 +75,9 @@ public class ClinicsController {
             stage.setTitle("Add New Clinic");
             stage.setScene(new Scene(root));
             stage.showAndWait();
+
+            loadClinicData();
+
         } catch (IOException e) {
             e.printStackTrace();
         }

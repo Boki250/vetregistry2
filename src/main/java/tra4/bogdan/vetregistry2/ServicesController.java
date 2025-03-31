@@ -63,6 +63,9 @@ public class ServicesController {
             stage.setTitle("Add New Service");
             stage.setScene(new Scene(root));
             stage.showAndWait();
+
+            loadServiceData();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
