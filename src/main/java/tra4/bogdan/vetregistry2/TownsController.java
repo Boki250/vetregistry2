@@ -52,16 +52,15 @@ public class TownsController {
     @FXML
     private void showTownForm() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("add-clinic-form.fxml"));
-            AddClinicFormController controller = new AddClinicFormController();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("add-town-form.fxml"));
+            AddTownFormController controller = new AddTownFormController();
             loader.setController(controller);
 
             Parent root = loader.load();
-            controller.prefillTownComboBox(); // Prefill the combo box with data
 
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setTitle("Add New Clinic");
+            stage.setTitle("Add New Town");
             stage.setScene(new Scene(root));
             stage.showAndWait();
         } catch (IOException e) {

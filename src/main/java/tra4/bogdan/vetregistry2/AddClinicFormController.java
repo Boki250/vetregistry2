@@ -24,7 +24,7 @@ public class AddClinicFormController {
     public void prefillTownComboBox() {
         conn = DatabaseConnection.connect();
         String sql = "SELECT id, name FROM town";
-        try (PreparedStatement pstmt = conn.prepareStatement(sql);
+        try (PreparedStatement pstmt = DatabaseConnection.connect().prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
 
             while (rs.next()) {
