@@ -1,11 +1,10 @@
 package tra4.bogdan.vetregistry2;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
+import javax.xml.transform.Result;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,6 +20,8 @@ public class EditClinicFormController {
 
     @FXML private ComboBox<TownItem> townIdField;
 
+    @FXML private ListView<ServiceItem> serviceIdField;
+
     // Constructor receives the database connection
     public EditClinicFormController(Clinic clinic) {
         this.clinic = clinic;
@@ -28,9 +29,28 @@ public class EditClinicFormController {
 
     public void initialize() {
         prefillTownComboBox(clinic.getTown());
+        prefillServiceListView();
         nameField.setText(clinic.getTitle());
         addressField.setText(clinic.getAddress());
         phoneNumberField.setText(clinic.getPhoneNumber());
+        serviceIdField.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+    }
+
+    public void prefillServiceListView() {
+        String sql = "SELECT id, service FROM services";
+        try (PreparedStatement pstmt = DatabaseConnection.connect().prepareStatement(sql);
+            ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                String service = rs.getString("service");
+                int serviceId = rs.getInt("id");
+                serviceIdField.getItems().add(new ServiceItem(serviceId, service));
+            }
+            //serviceIdField.setValue(serviceItem);
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Database Error", "Failed to retrieve services.");
+            e.printStackTrace();
+        }
     }
 
     public void prefillTownComboBox(TownItem townItem) {
@@ -71,19 +91,38 @@ public class EditClinicFormController {
             pstmt.setInt(5, clinic.getId());
 
             pstmt.executeUpdate();
-            //clinic.setTitle(name);
-            showAlert(Alert.AlertType.INFORMATION, "Success", "Clinic updated successfully!");
-
-            // Clear form fields
-            nameField.clear();
-
-            // Close modal dialog after success
-            ((Stage) nameField.getScene().getWindow()).close();
-
         } catch (SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Database Error", "Failed to update clinic.");
             e.printStackTrace();
         }
+
+        String sql2 = "DELETE FROM services_clinic WHERE clinic_id = ?";
+
+        try (PreparedStatement pstmt2 = DatabaseConnection.connect().prepareStatement(sql2)) {
+            pstmt2.setInt(1, clinic.getId());
+            pstmt2.executeUpdate();
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Database Error", "Failed to update clinic.");
+            e.printStackTrace();
+        }
+
+        String sql3 = "INSERT INTO services_clinic (clinic_id, services_id) VALUES (?, ?)";
+
+        try (PreparedStatement pstmt3 = DatabaseConnection.connect().prepareStatement(sql3)) {
+            var selectedItems = serviceIdField.getSelectionModel().getSelectedItems();
+
+            for (ServiceItem item : selectedItems) {
+                System.out.println("Izbrani element: " + item);
+                pstmt3.setInt(1, clinic.getId());
+                pstmt3.setInt(2, item.getServiceId());
+                pstmt3.executeUpdate();
+            }
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Database Error", "Failed to update clinic.");
+            e.printStackTrace();
+        }
+
+        ((Stage) nameField.getScene().getWindow()).close();
     }
 
     private void showAlert(Alert.AlertType alertType, String invalidInput, String s) {
