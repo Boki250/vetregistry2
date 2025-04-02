@@ -43,13 +43,21 @@ public class EditClinicFormController {
 
     public void prefillSpeciesListView() {
         String sql = "SELECT id, species_name FROM species";
+        List<Integer> speciesIds = getConnectedSpeciesIds();
+        System.out.println("SpeciesIds: " + speciesIds);
         try (PreparedStatement pstmt = DatabaseConnection.connect().prepareStatement(sql);
             ResultSet rs = pstmt.executeQuery()) {
 
             while (rs.next()) {
                 String species = rs.getString("species_name");
                 int speciesId = rs.getInt("id");
-                speciesIdField.getItems().add(new SpeciesItem(speciesId, species));
+                speciesIdField.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+                SpeciesItem speciesItem = new SpeciesItem(speciesId, species);
+                speciesIdField.getItems().add(speciesItem);
+                System.out.println("Adding SpeciesItem: " + speciesItem + " / " + speciesItem.getSpeciesId());
+                if (speciesIds.contains(speciesId)) {
+                    speciesIdField.getSelectionModel().select(speciesItem);
+                }
             }
         } catch (SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Database Error", "Failed to retrieve species.");
@@ -79,6 +87,26 @@ public class EditClinicFormController {
             showAlert(Alert.AlertType.ERROR, "Database Error", "Failed to retrieve services.");
             e.printStackTrace();
         }
+    }
+
+    public List<Integer> getConnectedSpeciesIds() {
+        String sql = "SELECT species_id FROM clinic_species WHERE clinic_id = ?";
+        List<Integer> idList = new ArrayList<>();
+        try (Connection conn = DatabaseConnection.connect();
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, clinic.getId());
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Integer speciesId = rs.getInt("species_id");
+                    System.out.println("SpeciesId: " + speciesId);
+                    idList.add(speciesId);
+                }
+            }
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Database Error", "Failed to retrieve species.");
+            e.printStackTrace();
+        }
+        return idList;
     }
 
     public List<Integer> getConnectedServiceIds() {
