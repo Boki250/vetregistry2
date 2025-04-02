@@ -21,7 +21,6 @@
     <center>
         <TableView fx:id="clinicTable" prefWidth="600">
             <columns>
-                <TableColumn text="Id" fx:id="clinicIdColumn" />
                 <!-- Stolpec za ime klinike -->
                 <TableColumn text="Ime klinike" fx:id="clinicTitleColumn" />
                 <!-- Stolpec za naslov klinike -->

@@ -10,7 +10,8 @@
     <TextField fx:id="addressField" promptText="Clinic address"/>
     <ComboBox fx:id="townIdField" promptText="Town ID"/>
     <TextField fx:id="phoneNumberField" promptText="Phone number"/>
-    <ListView fx:id="serviceIdField" prefHeight="100"/>
+    <ListView fx:id="serviceIdField" prefHeight="50"/>
+    <ListView fx:id="speciesIdField" prefHeight="50"/>
 
     <Button text="Update" onAction="#handleUpdateClinic"/>
 </VBox>

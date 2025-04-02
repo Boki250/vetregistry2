@@ -24,9 +24,6 @@ public class ClinicsController {
     private TextField inputFilterIme;
 
     @FXML
-    private TableColumn<Clinic, Integer> clinicIdColumn;
-
-    @FXML
     private TableColumn<Clinic, String> clinicTitleColumn;
 
     @FXML
@@ -45,7 +42,6 @@ public class ClinicsController {
     private TableView<Clinic> clinicTable;
     public void initialize() {
         // Povezava stolpcev z lastnostmi modela `Clinic`
-        clinicIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         clinicTitleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
         clinicAddressColumn.setCellValueFactory(new PropertyValueFactory<>("address"));
         clinicTownColumn.setCellValueFactory(new PropertyValueFactory<>("town"));

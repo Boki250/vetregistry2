@@ -9,6 +9,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EditClinicFormController {
     @FXML private TextField nameField;
@@ -22,6 +24,8 @@ public class EditClinicFormController {
 
     @FXML private ListView<ServiceItem> serviceIdField;
 
+    @FXML private ListView<SpeciesItem> speciesIdField;
+
     // Constructor receives the database connection
     public EditClinicFormController(Clinic clinic) {
         this.clinic = clinic;
@@ -30,27 +34,71 @@ public class EditClinicFormController {
     public void initialize() {
         prefillTownComboBox(clinic.getTown());
         prefillServiceListView();
+        prefillSpeciesListView();
         nameField.setText(clinic.getTitle());
         addressField.setText(clinic.getAddress());
         phoneNumberField.setText(clinic.getPhoneNumber());
         serviceIdField.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 
-    public void prefillServiceListView() {
-        String sql = "SELECT id, service FROM services";
+    public void prefillSpeciesListView() {
+        String sql = "SELECT id, species_name FROM species";
         try (PreparedStatement pstmt = DatabaseConnection.connect().prepareStatement(sql);
             ResultSet rs = pstmt.executeQuery()) {
 
             while (rs.next()) {
+                String species = rs.getString("species_name");
+                int speciesId = rs.getInt("id");
+                speciesIdField.getItems().add(new SpeciesItem(speciesId, species));
+            }
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Database Error", "Failed to retrieve species.");
+            e.printStackTrace();
+        }
+    }
+
+    public void prefillServiceListView() {
+        String sql = "SELECT id, service FROM services";
+        List<Integer> serviceIds = getConnectedServiceIds();
+        System.out.println("ServiceIds: " + serviceIds);
+        try (PreparedStatement pstmt = DatabaseConnection.connect().prepareStatement(sql);
+            ResultSet rs = pstmt.executeQuery()) {
+            serviceIdField.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+            while (rs.next()) {
                 String service = rs.getString("service");
                 int serviceId = rs.getInt("id");
-                serviceIdField.getItems().add(new ServiceItem(serviceId, service));
+                ServiceItem serviceItem = new ServiceItem(serviceId, service);
+                serviceIdField.getItems().add(serviceItem);
+                System.out.println("Adding ServiceItem: " + serviceItem + " / " + serviceItem.getServiceId());
+                if (serviceIds.contains(serviceId)) {
+                    serviceIdField.getSelectionModel().select(serviceItem);
+                }
             }
             //serviceIdField.setValue(serviceItem);
         } catch (SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Database Error", "Failed to retrieve services.");
             e.printStackTrace();
         }
+    }
+
+    public List<Integer> getConnectedServiceIds() {
+        String sql = "SELECT services_id FROM services_clinic WHERE clinic_id = ?";
+        List<Integer> idList = new ArrayList<>();
+        try (Connection conn = DatabaseConnection.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, clinic.getId());
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Integer serviceId = rs.getInt("services_id");
+                    System.out.println("ServiceId: " + serviceId);
+                    idList.add(serviceId);
+                }
+            }
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Database Error", "Failed to retrieve services.");
+            e.printStackTrace();
+        }
+        return idList;
     }
 
     public void prefillTownComboBox(TownItem townItem) {
@@ -110,12 +158,38 @@ public class EditClinicFormController {
 
         try (PreparedStatement pstmt3 = DatabaseConnection.connect().prepareStatement(sql3)) {
             var selectedItems = serviceIdField.getSelectionModel().getSelectedItems();
-
+            System.out.println("Izbrani elementi: " + selectedItems);
             for (ServiceItem item : selectedItems) {
                 System.out.println("Izbrani element: " + item);
                 pstmt3.setInt(1, clinic.getId());
                 pstmt3.setInt(2, item.getServiceId());
                 pstmt3.executeUpdate();
+            }
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Database Error", "Failed to update clinic.");
+            e.printStackTrace();
+        }
+
+        String sql4 = "DELETE FROM clinic_species WHERE clinic_id = ?";
+
+        try (PreparedStatement pstmt4 = DatabaseConnection.connect().prepareStatement(sql4)) {
+            pstmt4.setInt(1, clinic.getId());
+            pstmt4.executeUpdate();
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Database Error", "Failed to update clinic.");
+            e.printStackTrace();
+        }
+
+        String sql5 = "INSERT INTO clinic_species (clinic_id, species_id) VALUES (?, ?)";
+
+        try (PreparedStatement pstmt5 = DatabaseConnection.connect().prepareStatement(sql5)) {
+            var selectedItems = speciesIdField.getSelectionModel().getSelectedItems();
+
+            for (SpeciesItem item : selectedItems) {
+                System.out.println("Izbrani element: " + item);
+                pstmt5.setInt(1, clinic.getId());
+                pstmt5.setInt(2, item.getSpeciesId());
+                pstmt5.executeUpdate();
             }
         } catch (SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Database Error", "Failed to update clinic.");
