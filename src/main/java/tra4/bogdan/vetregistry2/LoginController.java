@@ -26,17 +26,17 @@ public class LoginController {
         String username = usernameField.getText();
         String password = passwordField.getText();
 
-        // For simplicity, we're using hardcoded credentials
+        // For simplicity, we're using hardcoded username and a changeable password
         // In a real application, you would validate against a database
-        if (username.equals("admin") && password.equals("admin")) {
+        if (username.equals("admin") && password.equals(ChangePasswordController.getCurrentPassword())) {
             try {
                 // Load the main application view
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("app-view.fxml"));
                 Parent root = loader.load();
-                
+
                 // Get the current stage
                 Stage stage = (Stage) usernameField.getScene().getWindow();
-                
+
                 // Set the new scene
                 Scene scene = new Scene(root, 800, 800);
                 stage.setTitle("Register veterinarskih klinik");

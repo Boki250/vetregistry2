@@ -27,6 +27,8 @@
         <menus>
             <Menu text="Datoteka">
                 <items>
+                    <MenuItem text="Menjava gesla" onAction="#showChangePasswordForm"/>
+                    <SeparatorMenuItem />
                     <MenuItem text="Izhod" onAction="#handleExit"/>
                 </items>
             </Menu>
