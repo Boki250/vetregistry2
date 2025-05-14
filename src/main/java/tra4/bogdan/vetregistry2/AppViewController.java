@@ -5,12 +5,15 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Optional;
 
 public class AppViewController {
     @FXML
@@ -74,6 +77,35 @@ public class AppViewController {
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleLogout() {
+        // Show confirmation dialog
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Potrditev odjave");
+        alert.setHeaderText("Ali ste prepričani, da se želite odjaviti?");
+        alert.setContentText("Vsi neshranjeni podatki bodo izgubljeni.");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            try {
+                // Load the login view
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("login-view.fxml"));
+                Parent root = loader.load();
+
+                // Get the current stage
+                Stage stage = (Stage) rootPane.getScene().getWindow();
+
+                // Set the new scene
+                Scene scene = new Scene(root, 400, 300);
+                stage.setTitle("Login - Veterinary Registry");
+                stage.setScene(scene);
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

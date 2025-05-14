@@ -29,6 +29,7 @@
                 <items>
                     <MenuItem text="Menjava gesla" onAction="#showChangePasswordForm"/>
                     <SeparatorMenuItem />
+                    <MenuItem text="Odjava" onAction="#handleLogout"/>
                     <MenuItem text="Izhod" onAction="#handleExit"/>
                 </items>
             </Menu>
