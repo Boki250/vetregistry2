@@ -40,47 +40,78 @@ public class TownsController {
         townNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         townZipColumn.setCellValueFactory(new PropertyValueFactory<>("zip"));
         townActionColumn.setCellFactory(param -> new TableCell<>() {
-            private final Button deletebutton = new Button("Izbriši");
+            private final Button deleteButton = new Button("Izbriši");
             private final Button editButton = new Button("Uredi");
-            private final HBox buttonContainer = new HBox(5, editButton, deletebutton);
+            private final Button detailsButton = new Button("Podrobnosti");
+            private HBox buttonContainer;
 
             {
-                editButton.setOnAction(event -> {
-                    Town town = getTableView().getItems().get(getIndex());
-                    System.out.println("Uredi: " + town.getId());
-                    try {
-                        FXMLLoader loader = new FXMLLoader(getClass().getResource("edit-town-form.fxml"));
-                        EditTownFormController controller = new EditTownFormController(town);
-                        loader.setController(controller);
+                // Check if user has "skrbnik" status
+                String userStatus = VetRegistryApplication.getCurrentUserStatus();
+                if ("skrbnik".equals(userStatus)) {
+                    // User is "skrbnik", show edit and delete buttons
+                    buttonContainer = new HBox(5, editButton, deleteButton);
 
-                        Parent root = loader.load();
+                    editButton.setOnAction(event -> {
+                        Town town = getTableView().getItems().get(getIndex());
+                        System.out.println("Uredi: " + town.getId());
+                        try {
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("edit-town-form.fxml"));
+                            EditTownFormController controller = new EditTownFormController(town);
+                            loader.setController(controller);
 
-                        Stage stage = new Stage();
-                        stage.initModality(Modality.APPLICATION_MODAL);
-                        stage.setTitle("Update Towns");
-                        stage.setScene(new Scene(root));
-                        stage.showAndWait();
+                            Parent root = loader.load();
 
+                            Stage stage = new Stage();
+                            stage.initModality(Modality.APPLICATION_MODAL);
+                            stage.setTitle("Update Towns");
+                            stage.setScene(new Scene(root));
+                            stage.showAndWait();
+
+                            loadTownData();
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+
+                    deleteButton.setOnAction(event -> {
+                        Town town = getTableView().getItems().get(getIndex());
+                        System.out.println("Brisanje: " + town.getId());
+                        String query = "DELETE FROM town WHERE id = ?";
+                        try (Connection connection = DatabaseConnection.connect();
+                             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+                            preparedStatement.setInt(1, town.getId());
+                            preparedStatement.executeUpdate();
+                        } catch (SQLException ex) {
+                            throw new RuntimeException(ex);
+                        }
                         loadTownData();
+                    });
+                } else {
+                    // User is not "skrbnik", show only details button
+                    buttonContainer = new HBox(5, detailsButton);
 
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
+                    detailsButton.setOnAction(event -> {
+                        Town town = getTableView().getItems().get(getIndex());
+                        System.out.println("Podrobnosti: " + town.getId());
+                        try {
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("view-town-form.fxml"));
+                            ViewTownFormController controller = new ViewTownFormController(town);
+                            loader.setController(controller);
 
-                deletebutton.setOnAction(event -> {
-                    Town town = getTableView().getItems().get(getIndex());
-                    System.out.println("Brisanje: " + town.getId());
-                    String query = "DELETE FROM town WHERE id = ?";
-                    try (Connection connection = DatabaseConnection.connect();
-                         PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-                        preparedStatement.setInt(1, town.getId());
-                        preparedStatement.executeUpdate();
-                    } catch (SQLException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                    loadTownData();
-                });
+                            Parent root = loader.load();
+
+                            Stage stage = new Stage();
+                            stage.initModality(Modality.APPLICATION_MODAL);
+                            stage.setTitle("Town Details");
+                            stage.setScene(new Scene(root));
+                            stage.showAndWait();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                }
             }
 
             @Override
