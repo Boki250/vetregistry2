@@ -65,8 +65,8 @@ public class LoginController {
                 return false;
             }
 
-            // Prepare SQL query to check credentials
-            String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+            // Prepare SQL query to check credentials and get user status
+            String sql = "SELECT s.title FROM users u, status s WHERE u.username = ? AND u.password = ? AND u.status_id = s.id";
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setString(1, username);
                 stmt.setString(2, password);
@@ -74,7 +74,13 @@ public class LoginController {
                 // Execute query
                 try (ResultSet rs = stmt.executeQuery()) {
                     // If a record is found, credentials are valid
-                    return rs.next();
+                    if (rs.next()) {
+                        // Get the user status and store it
+                        String status = rs.getString(1);
+                        VetRegistryApplication.setCurrentUserStatus(status);
+                        return true;
+                    }
+                    return false;
                 }
             }
         } catch (SQLException e) {

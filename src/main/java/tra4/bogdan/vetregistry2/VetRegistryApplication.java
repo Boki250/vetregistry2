@@ -11,6 +11,7 @@ import java.sql.Connection;
 public class VetRegistryApplication extends Application {
     private static Connection conn;
     private static String currentUsername;
+    private static String currentUserStatus;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -31,4 +32,8 @@ public class VetRegistryApplication extends Application {
     public static String getCurrentUsername() { return currentUsername; }
 
     public static void setCurrentUsername(String username) { currentUsername = username; }
+
+    public static String getCurrentUserStatus() { return currentUserStatus; }
+
+    public static void setCurrentUserStatus(String status) { currentUserStatus = status; }
 }
