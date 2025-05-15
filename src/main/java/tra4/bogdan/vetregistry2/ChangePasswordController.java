@@ -97,18 +97,24 @@ public class ChangePasswordController {
                 return false;
             }
 
-            // First, validate the current password
-            String validateSql = "SELECT username FROM users WHERE password = ?";
+            // Get the current username from the application
+            String username = VetRegistryApplication.getCurrentUsername();
+            if (username == null || username.isEmpty()) {
+                showError("No user is currently logged in");
+                return false;
+            }
+
+            // First, validate the current password for the logged-in user
+            String validateSql = "SELECT username FROM users WHERE username = ? AND password = ?";
             try (PreparedStatement validateStmt = conn.prepareStatement(validateSql)) {
-                validateStmt.setString(1, currentPassword);
+                validateStmt.setString(1, username);
+                validateStmt.setString(2, currentPassword);
 
                 try (ResultSet rs = validateStmt.executeQuery()) {
                     if (!rs.next()) {
-                        // No user found with the given password
+                        // No user found with the given username and password
                         return false;
                     }
-
-                    String username = rs.getString("username");
 
                     // Now update the password for this user
                     String updateSql = "UPDATE users SET password = ? WHERE username = ?";

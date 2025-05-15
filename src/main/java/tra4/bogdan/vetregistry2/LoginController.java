@@ -33,6 +33,9 @@ public class LoginController {
         // Validate credentials against the users table in the database
         if (validateCredentials(username, password)) {
             try {
+                // Store the current username in the application
+                VetRegistryApplication.setCurrentUsername(username);
+
                 // Load the main application view
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("app-view.fxml"));
                 Parent root = loader.load();
