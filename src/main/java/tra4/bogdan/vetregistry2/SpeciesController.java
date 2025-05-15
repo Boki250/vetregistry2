@@ -38,7 +38,8 @@ public class SpeciesController {
         speciesActionColumn.setCellFactory(param -> new TableCell<>() {
             private final Button editButton = new Button("Uredi");
             private final Button deleteButton = new Button("Izbriši");
-            private final HBox buttonContainer = new HBox(5, editButton, deleteButton);
+            private final Button detailsButton = new Button("Podrobnosti");
+            private final HBox buttonContainer = new HBox(5);
 
             {
                 editButton.setOnAction(event -> {
@@ -64,6 +65,27 @@ public class SpeciesController {
                     }
                 });
 
+                detailsButton.setOnAction(event -> {
+                    Species species = getTableView().getItems().get(getIndex());
+                    System.out.println("Podrobnosti: " + species.getId());
+                    try {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("view-species-form.fxml"));
+                        ViewSpeciesFormController controller = new ViewSpeciesFormController(species);
+                        loader.setController(controller);
+
+                        Parent root = loader.load();
+
+                        Stage stage = new Stage();
+                        stage.initModality(Modality.APPLICATION_MODAL);
+                        stage.setTitle("Species Details");
+                        stage.setScene(new Scene(root));
+                        stage.showAndWait();
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+
                 deleteButton.setOnAction(event -> {
                     Species species = getTableView().getItems().get(getIndex());
                     System.out.println("Brisanje: " + species.getId());
@@ -77,6 +99,19 @@ public class SpeciesController {
                     }
                     loadSpeciesData();
                 });
+
+                // Get user status
+                String userStatus = VetRegistryApplication.getCurrentUserStatus();
+
+                // Add appropriate buttons based on user status
+                if (userStatus != null && userStatus.equals("skrbnik")) {
+                    // Admin user gets edit and delete buttons
+                    buttonContainer.getChildren().add(deleteButton);
+                    buttonContainer.getChildren().add(editButton);
+                } else {
+                    // Regular user gets only details button
+                    buttonContainer.getChildren().add(detailsButton);
+                }
             }
 
             @Override
