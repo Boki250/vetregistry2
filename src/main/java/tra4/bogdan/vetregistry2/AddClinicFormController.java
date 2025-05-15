@@ -34,7 +34,7 @@ public class AddClinicFormController {
                 townIdField.getItems().add(new TownItem(townId, townName));
             }
         } catch (SQLException e) {
-            showAlert(Alert.AlertType.ERROR, "Database Error", "Failed to retrieve towns.");
+            showAlert(Alert.AlertType.ERROR, "Napaka v bazi podatkov", "Napaka pri pridobivanju mest.");
             e.printStackTrace();
         }
     }
@@ -60,7 +60,7 @@ public class AddClinicFormController {
             pstmt.setString(4, phone);
 
             pstmt.executeUpdate();
-            showAlert(Alert.AlertType.INFORMATION, "Success", "Clinic added successfully!");
+            showAlert(Alert.AlertType.INFORMATION, "Uspeh", "Klinika uspešno dodana!");
 
             // Clear form fields
             titleField.clear();
@@ -72,14 +72,14 @@ public class AddClinicFormController {
             ((Stage) titleField.getScene().getWindow()).close();
 
         } catch (SQLException e) {
-            showAlert(Alert.AlertType.ERROR, "Database Error", "Failed to insert clinic.");
+            showAlert(Alert.AlertType.ERROR, "Napaka v bazi podatkov", "Napaka pri dodajanju klinike.");
             e.printStackTrace();
         }
     }
 
     private void showAlert(Alert.AlertType alertType, String invalidInput, String s) {
         Alert alert = new Alert(alertType);
-        alert.setTitle("Invalid Input");
+        alert.setTitle("Neveljavni vnos");
         alert.setHeaderText(invalidInput);
         alert.setContentText(s);
         alert.showAndWait();

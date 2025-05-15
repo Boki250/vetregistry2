@@ -4,10 +4,10 @@
 
 <VBox spacing="10" alignment="CENTER" xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1">
-    <Label text="Add New Clinic"/>
-    <TextField fx:id="titleField" promptText="Clinic Title"/>
-    <TextField fx:id="addressField" promptText="Address"/>
-    <ComboBox fx:id="townIdField" promptText="Town ID"/>
-    <TextField fx:id="phoneField" promptText="Phone Number"/>
-    <Button text="Add Clinic" onAction="#handleAddClinic"/>
+    <Label text="Dodaj novo kliniko"/>
+    <TextField fx:id="titleField" promptText="Naziv klinike"/>
+    <TextField fx:id="addressField" promptText="Naslov"/>
+    <ComboBox fx:id="townIdField" promptText="Mesto"/>
+    <TextField fx:id="phoneField" promptText="Telefonska številka"/>
+    <Button text="Dodaj kliniko" onAction="#handleAddClinic"/>
 </VBox>
