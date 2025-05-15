@@ -42,45 +42,76 @@ public class ServicesController {
         servicesActionColumn.setCellFactory(param -> new TableCell<>() {
             private final Button deleteButton = new Button("Izbriši");
             private final Button editButton = new Button("Uredi");
-            private final HBox buttonContainer = new HBox(5, editButton, deleteButton);
+            private final Button detailsButton = new Button("Podrobnosti");
+            private HBox buttonContainer;
 
             {
-                editButton.setOnAction(event -> {
-                    Service service = getTableView().getItems().get(getIndex());
-                    System.out.println("Uredi: " + service.getId());
-                    try {
-                        FXMLLoader loader = new FXMLLoader(getClass().getResource("edit-service-form.fxml"));
-                        EditServiceFormController controller = new EditServiceFormController(service);
-                        loader.setController(controller);
+                // Check if user has "skrbnik" status
+                String userStatus = VetRegistryApplication.getCurrentUserStatus();
+                if ("skrbnik".equals(userStatus)) {
+                    // User is "skrbnik", show edit and delete buttons
+                    buttonContainer = new HBox(5, editButton, deleteButton);
 
-                        Parent root = loader.load();
+                    editButton.setOnAction(event -> {
+                        Service service = getTableView().getItems().get(getIndex());
+                        System.out.println("Uredi: " + service.getId());
+                        try {
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("edit-service-form.fxml"));
+                            EditServiceFormController controller = new EditServiceFormController(service);
+                            loader.setController(controller);
 
-                        Stage stage = new Stage();
-                        stage.initModality(Modality.APPLICATION_MODAL);
-                        stage.setTitle("Update Services");
-                        stage.setScene(new Scene(root));
-                        stage.showAndWait();
+                            Parent root = loader.load();
 
+                            Stage stage = new Stage();
+                            stage.initModality(Modality.APPLICATION_MODAL);
+                            stage.setTitle("Update Services");
+                            stage.setScene(new Scene(root));
+                            stage.showAndWait();
+
+                            loadServiceData();
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+
+                    deleteButton.setOnAction(event -> {
+                        Service service = getTableView().getItems().get(getIndex());
+                        System.out.println("Brisanje: " + service.getId());
+                        String query = "DELETE FROM services WHERE id = ?";
+                        try (Connection connection = DatabaseConnection.connect();
+                             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+                            preparedStatement.setInt(1, service.getId());
+                            preparedStatement.executeUpdate();
+                        } catch (SQLException ex) {
+                            throw new RuntimeException(ex);
+                        }
                         loadServiceData();
+                    });
+                } else {
+                    // User is not "skrbnik", show only details button
+                    buttonContainer = new HBox(5, detailsButton);
 
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
+                    detailsButton.setOnAction(event -> {
+                        Service service = getTableView().getItems().get(getIndex());
+                        System.out.println("Podrobnosti: " + service.getId());
+                        try {
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("view-service-form.fxml"));
+                            ViewServiceFormController controller = new ViewServiceFormController(service);
+                            loader.setController(controller);
 
-                deleteButton.setOnAction(event -> {
-                    Service service = getTableView().getItems().get(getIndex());
-                    System.out.println("Brisanje: " + service.getId());
-                    String query = "DELETE FROM services WHERE id = ?";
-                    try (Connection connection = DatabaseConnection.connect();
-                         PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-                        preparedStatement.setInt(1, service.getId());
-                        preparedStatement.executeUpdate();
-                    } catch (SQLException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                    loadServiceData();
-                });
+                            Parent root = loader.load();
+
+                            Stage stage = new Stage();
+                            stage.initModality(Modality.APPLICATION_MODAL);
+                            stage.setTitle("Service Details");
+                            stage.setScene(new Scene(root));
+                            stage.showAndWait();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                }
             }
 
             @Override
