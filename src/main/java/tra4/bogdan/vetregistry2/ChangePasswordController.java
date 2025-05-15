@@ -8,6 +8,11 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 public class ChangePasswordController {
     @FXML
     private PasswordField currentPasswordField;
@@ -21,7 +26,7 @@ public class ChangePasswordController {
     @FXML
     private Label errorLabel;
 
-    private static String currentPassword = "admin"; // Default password
+    // No longer using static password - now using database
 
     @FXML
     private void initialize() {
@@ -35,12 +40,6 @@ public class ChangePasswordController {
         String newPassword = newPasswordField.getText();
         String confirmPassword = confirmPasswordField.getText();
 
-        // Validate current password
-        if (!currentInput.equals(currentPassword)) {
-            showError("Trenutno geslo ni pravilno.");
-            return;
-        }
-
         // Validate new password
         if (newPassword.isEmpty()) {
             showError("Novo geslo ne sme biti prazno.");
@@ -53,8 +52,11 @@ public class ChangePasswordController {
             return;
         }
 
-        // Update password
-        ChangePasswordController.currentPassword = newPassword;
+        // Validate current password against database and update password
+        if (!validateAndUpdatePassword(currentInput, newPassword)) {
+            showError("Trenutno geslo ni pravilno.");
+            return;
+        }
 
         // Show success message
         showSuccess("Geslo je bilo uspešno spremenjeno.");
@@ -87,8 +89,44 @@ public class ChangePasswordController {
         stage.close();
     }
 
-    // Static method to get the current password for authentication
-    public static String getCurrentPassword() {
-        return currentPassword;
+    // Validate current password against database and update password if valid
+    private boolean validateAndUpdatePassword(String currentPassword, String newPassword) {
+        try (Connection conn = DatabaseConnection.connect()) {
+            if (conn == null) {
+                showError("Database connection failed");
+                return false;
+            }
+
+            // First, validate the current password
+            String validateSql = "SELECT username FROM users WHERE password = ?";
+            try (PreparedStatement validateStmt = conn.prepareStatement(validateSql)) {
+                validateStmt.setString(1, currentPassword);
+
+                try (ResultSet rs = validateStmt.executeQuery()) {
+                    if (!rs.next()) {
+                        // No user found with the given password
+                        return false;
+                    }
+
+                    String username = rs.getString("username");
+
+                    // Now update the password for this user
+                    String updateSql = "UPDATE users SET password = ? WHERE username = ?";
+                    try (PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
+                        updateStmt.setString(1, newPassword);
+                        updateStmt.setString(2, username);
+
+                        int rowsAffected = updateStmt.executeUpdate();
+                        return rowsAffected > 0;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showError("Database error: " + e.getMessage());
+            return false;
+        }
     }
+
+    // No longer using static method to get password - now using database
 }
