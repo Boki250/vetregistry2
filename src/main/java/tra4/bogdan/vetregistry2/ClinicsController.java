@@ -49,45 +49,76 @@ public class ClinicsController {
         clinicActionColumn.setCellFactory(param -> new TableCell<>() {
             private final Button deleteButton = new Button("Izbriši");
             private final Button editButton = new Button("Uredi");
-            private final HBox buttonContainer = new HBox(5, editButton, deleteButton);
+            private final Button detailsButton = new Button("Podrobnosti");
+            private HBox buttonContainer;
 
             {
-                editButton.setOnAction(event -> {
-                    Clinic clinic = getTableView().getItems().get(getIndex());
-                    System.out.println("Uredi: " + clinic.getId());
-                    try {
-                        FXMLLoader loader = new FXMLLoader(getClass().getResource("edit-clinic-form.fxml"));
-                        EditClinicFormController controller = new EditClinicFormController(clinic);
-                        loader.setController(controller);
+                // Check if user has "skrbnik" status
+                String userStatus = VetRegistryApplication.getCurrentUserStatus();
+                if ("skrbnik".equals(userStatus)) {
+                    // User is "skrbnik", show edit and delete buttons
+                    buttonContainer = new HBox(5, editButton, deleteButton);
 
-                        Parent root = loader.load();
+                    editButton.setOnAction(event -> {
+                        Clinic clinic = getTableView().getItems().get(getIndex());
+                        System.out.println("Uredi: " + clinic.getId());
+                        try {
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("edit-clinic-form.fxml"));
+                            EditClinicFormController controller = new EditClinicFormController(clinic);
+                            loader.setController(controller);
 
-                        Stage stage = new Stage();
-                        stage.initModality(Modality.APPLICATION_MODAL);
-                        stage.setTitle("Update Clinic");
-                        stage.setScene(new Scene(root));
-                        stage.showAndWait();
+                            Parent root = loader.load();
 
+                            Stage stage = new Stage();
+                            stage.initModality(Modality.APPLICATION_MODAL);
+                            stage.setTitle("Update Clinic");
+                            stage.setScene(new Scene(root));
+                            stage.showAndWait();
+
+                            loadClinicData();
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+
+                    deleteButton.setOnAction(event -> {
+                        Clinic clinic = getTableView().getItems().get(getIndex());
+                        System.out.println("Brisanje: " + clinic.getId());
+                        String query = "DELETE FROM clinic WHERE id = ?";
+                        try (Connection connection = DatabaseConnection.connect();
+                             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+                            preparedStatement.setInt(1, clinic.getId());
+                            preparedStatement.executeUpdate();
+                        } catch (SQLException ex) {
+                            throw new RuntimeException(ex);
+                        }
                         loadClinicData();
+                    });
+                } else {
+                    // User is not "skrbnik", show only details button
+                    buttonContainer = new HBox(5, detailsButton);
 
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
+                    detailsButton.setOnAction(event -> {
+                        Clinic clinic = getTableView().getItems().get(getIndex());
+                        System.out.println("Podrobnosti: " + clinic.getId());
+                        try {
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("view-clinic-form.fxml"));
+                            ViewClinicFormController controller = new ViewClinicFormController(clinic);
+                            loader.setController(controller);
 
-                deleteButton.setOnAction(event -> {
-                    Clinic clinic = getTableView().getItems().get(getIndex());
-                    System.out.println("Brisanje: " + clinic.getId());
-                    String query = "DELETE FROM clinic WHERE id = ?";
-                    try (Connection connection = DatabaseConnection.connect();
-                         PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-                        preparedStatement.setInt(1, clinic.getId());
-                        preparedStatement.executeUpdate();
-                    } catch (SQLException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                    loadClinicData();
-                });
+                            Parent root = loader.load();
+
+                            Stage stage = new Stage();
+                            stage.initModality(Modality.APPLICATION_MODAL);
+                            stage.setTitle("Clinic Details");
+                            stage.setScene(new Scene(root));
+                            stage.showAndWait();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                }
             }
 
             @Override
