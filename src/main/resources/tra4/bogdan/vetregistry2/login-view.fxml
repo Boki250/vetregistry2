@@ -15,23 +15,23 @@
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
     </padding>
 
-    <Label text="Veterinary Registry Login" style="-fx-font-weight: bold;">
+    <Label text="Prijava v register veterinarskih klinik" style="-fx-font-weight: bold;">
         <font>
             <Font size="18.0"/>
         </font>
     </Label>
 
     <HBox alignment="CENTER" spacing="10.0">
-        <Label text="Username:" minWidth="80.0"/>
-        <TextField fx:id="usernameField" promptText="Enter username" minWidth="200.0"/>
+        <Label text="Uporabniško ime:" minWidth="80.0"/>
+        <TextField fx:id="usernameField" promptText="Vnesite uporabniško ime" minWidth="200.0"/>
     </HBox>
 
     <HBox alignment="CENTER" spacing="10.0">
-        <Label text="Password:" minWidth="80.0"/>
-        <PasswordField fx:id="passwordField" promptText="Enter password" minWidth="200.0"/>
+        <Label text="Geslo:" minWidth="80.0"/>
+        <PasswordField fx:id="passwordField" promptText="Vnesite geslo" minWidth="200.0"/>
     </HBox>
 
-    <Button text="Login" onAction="#handleLogin" defaultButton="true" minWidth="100.0"/>
-    
+    <Button text="Prijava" onAction="#handleLogin" defaultButton="true" minWidth="100.0"/>
+
     <Label fx:id="errorLabel" textFill="RED" visible="false"/>
 </VBox>

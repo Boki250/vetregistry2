@@ -17,7 +17,7 @@ public class VetRegistryApplication extends Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(VetRegistryApplication.class.getResource("login-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 400, 300);
-        stage.setTitle("Login - Veterinary Registry");
+        stage.setTitle("Prijava");
         stage.setScene(scene);
         stage.show();
     }

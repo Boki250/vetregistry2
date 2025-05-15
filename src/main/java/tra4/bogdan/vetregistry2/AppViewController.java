@@ -139,7 +139,7 @@ public class AppViewController {
 
                 // Set the new scene
                 Scene scene = new Scene(root, 400, 300);
-                stage.setTitle("Login - Veterinary Registry");
+                stage.setTitle("Prijava");
                 stage.setScene(scene);
                 stage.show();
             } catch (IOException e) {
