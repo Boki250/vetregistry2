@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tra4.bogdan.vetregistry2.UsersController">
+    <top>
+        <HBox alignment="TOP_CENTER" spacing="5.0">
+            <TextField fx:id="inputFilterUsername" promptText="Vnesite uporabniško ime" maxWidth="300.0" />
+            <Button text="Išči" onAction="#applyFilter"/>
+            <Button text="Počisti" onAction="#clearFilter"/>
+            <Button text="Dodaj uporabnika" onAction="#showAddUserForm"/>
+        </HBox>
+    </top>
+
+    <center>
+        <TableView fx:id="userTable" prefWidth="600">
+            <columns>
+                <!-- Stolpec za uporabniško ime -->
+                <TableColumn text="Uporabniško ime" fx:id="userUsernameColumn" />
+                <!-- Stolpec za status uporabnika -->
+                <TableColumn text="Status" fx:id="userStatusColumn" />
+                <!-- Stolpec za akcije -->
+                <TableColumn text="Akcija" fx:id="userActionColumn" prefWidth="150" />
+            </columns>
+        </TableView>
+    </center>
+</BorderPane>

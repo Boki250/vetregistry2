@@ -7,6 +7,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -20,8 +22,27 @@ public class AppViewController {
     private BorderPane rootPane;
 
     @FXML
+    private MenuItem usersMenuItem;
+
+    @FXML
     private void initialize() {
         try {
+            // Check if current user has "skrbnik" status
+            String currentUserStatus = VetRegistryApplication.getCurrentUserStatus();
+            // Hide the Users menu item if the user doesn't have "skrbnik" status
+            if (!"skrbnik".equals(currentUserStatus)) {
+                // If not "skrbnik", first disable the Users menu item
+                usersMenuItem.setDisable(true);
+
+                // Then use Platform.runLater to ensure the scene is fully loaded before trying to remove the menu item
+                Platform.runLater(() -> {
+                    Menu parentMenu = usersMenuItem.getParentMenu();
+                    if (parentMenu != null) {
+                        parentMenu.getItems().remove(usersMenuItem);
+                    }
+                });
+            }
+
             showClinics();
         } catch (IOException e) {
             e.printStackTrace();
@@ -52,6 +73,24 @@ public class AppViewController {
     @FXML
     private void showServices() throws IOException {
         Parent view = FXMLLoader.load(getClass().getResource("services.fxml"));
+        rootPane.setCenter(view);
+    }
+
+    @FXML
+    private void showUsers() throws IOException {
+        // Check if current user has "skrbnik" status
+        String currentUserStatus = VetRegistryApplication.getCurrentUserStatus();
+        if (!"skrbnik".equals(currentUserStatus)) {
+            // If not "skrbnik", show an error message and return
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Dostop zavrnjen");
+            alert.setHeaderText("Nimate dovoljenja za dostop do tega pogleda");
+            alert.setContentText("Za dostop do seznama uporabnikov potrebujete status 'skrbnik'.");
+            alert.showAndWait();
+            return;
+        }
+
+        Parent view = FXMLLoader.load(getClass().getResource("users.fxml"));
         rootPane.setCenter(view);
     }
 

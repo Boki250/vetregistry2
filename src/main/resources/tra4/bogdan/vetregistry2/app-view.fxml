@@ -39,6 +39,7 @@
                     <MenuItem text="Storitve" onAction="#showServices"/>
                     <MenuItem text="Mesta" onAction="#showTowns"/>
                     <MenuItem text="Vrste" onAction="#showSpecies"/>
+                    <MenuItem fx:id="usersMenuItem" text="Uporabniki" onAction="#showUsers"/>
                 </items>
             </Menu>
         </menus>
