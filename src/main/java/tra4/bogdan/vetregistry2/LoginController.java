@@ -10,6 +10,10 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class LoginController {
     @FXML
@@ -26,9 +30,8 @@ public class LoginController {
         String username = usernameField.getText();
         String password = passwordField.getText();
 
-        // For simplicity, we're using hardcoded username and a changeable password
-        // In a real application, you would validate against a database
-        if (username.equals("admin") && password.equals(ChangePasswordController.getCurrentPassword())) {
+        // Validate credentials against the users table in the database
+        if (validateCredentials(username, password)) {
             try {
                 // Load the main application view
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("app-view.fxml"));
@@ -48,6 +51,33 @@ public class LoginController {
             }
         } else {
             showError("Invalid username or password");
+        }
+    }
+
+    private boolean validateCredentials(String username, String password) {
+        // Connect to the database
+        try (Connection conn = DatabaseConnection.connect()) {
+            if (conn == null) {
+                showError("Database connection failed");
+                return false;
+            }
+
+            // Prepare SQL query to check credentials
+            String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, username);
+                stmt.setString(2, password);
+
+                // Execute query
+                try (ResultSet rs = stmt.executeQuery()) {
+                    // If a record is found, credentials are valid
+                    return rs.next();
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showError("Database error: " + e.getMessage());
+            return false;
         }
     }
 
