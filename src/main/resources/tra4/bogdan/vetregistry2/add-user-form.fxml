@@ -4,9 +4,9 @@
 
 <VBox spacing="10" alignment="CENTER" xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1" fx:controller="tra4.bogdan.vetregistry2.AddUserFormController">
-    <Label text="Add New User"/>
-    <TextField fx:id="usernameField" promptText="Username"/>
-    <PasswordField fx:id="passwordField" promptText="Password"/>
+    <Label text="Dodaj novega uporabnika"/>
+    <TextField fx:id="usernameField" promptText="Uporabniško ime"/>
+    <PasswordField fx:id="passwordField" promptText="Geslo"/>
     <ComboBox fx:id="statusField" promptText="Status"/>
-    <Button text="Add User" onAction="#handleAddUser"/>
+    <Button text="Dodaj uporabnika" onAction="#handleAddUser"/>
 </VBox>

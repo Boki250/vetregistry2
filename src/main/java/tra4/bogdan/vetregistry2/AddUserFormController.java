@@ -37,7 +37,7 @@ public class AddUserFormController {
                 statusField.getItems().add(statusTitle);
             }
         } catch (SQLException e) {
-            showAlert(Alert.AlertType.ERROR, "Database Error", "Failed to retrieve status options.");
+            showAlert(Alert.AlertType.ERROR, "Napaka v bazi podatkov", "Ni mogoče pridobiti možnosti statusa.");
             e.printStackTrace();
         }
     }
@@ -85,7 +85,7 @@ public class AddUserFormController {
             ((Stage) usernameField.getScene().getWindow()).close();
 
         } catch (SQLException e) {
-            showAlert(Alert.AlertType.ERROR, "Database Error", "Failed to insert user.");
+            showAlert(Alert.AlertType.ERROR, "Napaka v bazi podatkov", "Uporabnika ni bilo mogoče dodati.");
             e.printStackTrace();
         }
     }
