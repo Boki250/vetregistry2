@@ -40,12 +40,21 @@ public class ClinicsController {
 
     @FXML
     private TableView<Clinic> clinicTable;
+
+    @FXML
+    private Button addClinicButton;
     public void initialize() {
         // Povezava stolpcev z lastnostmi modela `Clinic`
         clinicTitleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
         clinicAddressColumn.setCellValueFactory(new PropertyValueFactory<>("address"));
         clinicTownColumn.setCellValueFactory(new PropertyValueFactory<>("town"));
         clinicPhoneNumberColumn.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
+
+        // Check if user has "skrbnik" status and hide the "Dodaj kliniko" button if not
+        String userStatus = VetRegistryApplication.getCurrentUserStatus();
+        if (!"skrbnik".equals(userStatus)) {
+            addClinicButton.setVisible(false);
+        }
         clinicActionColumn.setCellFactory(param -> new TableCell<>() {
             private final Button deleteButton = new Button("Izbriši");
             private final Button editButton = new Button("Uredi");
